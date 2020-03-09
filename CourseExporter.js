@@ -1,6 +1,7 @@
-let courseExporterVersion = "1.1";
-let initialDay = "2020-02-24";
-let alarmOn = false;
+var courseExporterVersion = "1.2";
+var initialDay = "2020-02-24";
+var alarmOn = false;
+
 /* FileSaver
  * A saveAs() FileSaver implementation.
  * 1.3.2
@@ -173,7 +174,7 @@ if (typeof module !== "undefined" && module.exports) {
  * By Nicode
  */
 
-let icsFormatter = function() {
+var icsFormatter = function() {
   "use strict";
   if (navigator.userAgent.includes("MSIE")) {
     alert("This Script don't support IE Browser!");
@@ -191,13 +192,13 @@ let icsFormatter = function() {
     buildCalendarBegin: function() {
       let calendarStart = [];
       calendarStart.push(
-          "BEGIN:VCALENDAR",
-          "METHOD:PUBLISH",
-          "VERSION:2.0",
-          "PRODID:" + prodID,
-          "CALSCALE:GREGORIAN",
-          "X-WR-CALNAME:" + calendarName,
-          "X-WR-TIMEZONE:Asia/Shanghai"
+        "BEGIN:VCALENDAR",
+        "METHOD:PUBLISH",
+        "VERSION:2.0",
+        "PRODID:" + prodID,
+        "CALSCALE:GREGORIAN",
+        "X-WR-CALNAME:" + calendarName,
+        "X-WR-TIMEZONE:Asia/Shanghai"
       );
       let ret = calendarStart.join(SEPARATOR);
       return ret;
@@ -244,10 +245,18 @@ let icsFormatter = function() {
      * only if it's set "true" ,your alarm will take effect.
      * @param {Boolean} enabled
      */
-    setAlarmEnabled: function(enabled){
+    setAlarmEnabled: function(enabled) {
       alarmEnabled = enabled;
     },
-    addEvent: function(title, description, location, begin, end, rrule, alarms) {
+    addEvent: function(
+      title,
+      description,
+      location,
+      begin,
+      end,
+      rrule,
+      alarms
+    ) {
       calendarEvents.push({
         title: title,
         description: description,
@@ -258,17 +267,25 @@ let icsFormatter = function() {
         alarms: alarms
       });
     },
-    formatEvent: function(title, description, location, begin, end, rrule, alarms) {
+    formatEvent: function(
+      title,
+      description,
+      location,
+      begin,
+      end,
+      rrule,
+      alarms
+    ) {
       function timeConvert(t) {
         let tYear = ("0000" + t.getUTCFullYear().toString()).slice(-4),
-            tMonth = ("00" + (t.getUTCMonth() + 1).toString()).slice(-2),
-            tDay = ("00" + t.getUTCDate().toString()).slice(-2),
-            tHours = ("00" + t.getUTCHours().toString()).slice(-2),
-            tMinutes = ("00" + t.getUTCMinutes().toString()).slice(-2),
-            tSeconds = ("00" + t.getUTCSeconds().toString()).slice(-2);
+          tMonth = ("00" + (t.getUTCMonth() + 1).toString()).slice(-2),
+          tDay = ("00" + t.getUTCDate().toString()).slice(-2),
+          tHours = ("00" + t.getUTCHours().toString()).slice(-2),
+          tMinutes = ("00" + t.getUTCMinutes().toString()).slice(-2),
+          tSeconds = ("00" + t.getUTCSeconds().toString()).slice(-2);
 
         let tDate = tYear + tMonth + tDay,
-            tTime = 'T' + tHours + tMinutes + tSeconds + 'Z';
+          tTime = "T" + tHours + tMinutes + tSeconds + "Z";
         let ret = tDate + tTime;
         return ret;
       }
@@ -280,13 +297,13 @@ let icsFormatter = function() {
         throw new TypeError("VEVENT has no DTEND!");
       let eventContent = [];
       eventContent.push(
-          "BEGIN:VEVENT",
-          "X-MICROSOFT-CDO-BUSYSTATUS:BUSY",
-          "X-MICROSOFT-CDO-IMPORTANCE:1",
-          "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR:AUTOMATIC",
-          "SUMMARY:" + title,
-          "DTSTART:" + timeConvert(begin),
-          "DTEND:" + timeConvert(end),
+        "BEGIN:VEVENT",
+        "X-MICROSOFT-CDO-BUSYSTATUS:BUSY",
+        "X-MICROSOFT-CDO-IMPORTANCE:1",
+        "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR:AUTOMATIC",
+        "SUMMARY:" + title,
+        "DTSTART:" + timeConvert(begin),
+        "DTEND:" + timeConvert(end)
       );
       if (typeof location !== "undefined")
         eventContent.push("LOCATION:" + location);
@@ -295,8 +312,15 @@ let icsFormatter = function() {
       if (typeof rrule !== "undefined") {
         if (typeof rrule.FREQ === "undefined")
           throw new TypeError("RRULE.FREQ undefined!");
-        if(!(rrule.FREQ === "DAILY" || rrule.FREQ === "WEEKLY" || rrule.FREQ === "MONTHLY" || rrule.FREQ === "YEARLY"))
-          throw "RRule.FREQ = " + rrule.FREQ +" is illegal.";
+        if (
+          !(
+            rrule.FREQ === "DAILY" ||
+            rrule.FREQ === "WEEKLY" ||
+            rrule.FREQ === "MONTHLY" ||
+            rrule.FREQ === "YEARLY"
+          )
+        )
+          throw "RRule.FREQ = " + rrule.FREQ + " is illegal.";
         let rrulestr = "";
         rrulestr += "FREQ=" + rrule.FREQ + ";";
         if (typeof rrule.COUNT !== "undefined")
@@ -314,13 +338,14 @@ let icsFormatter = function() {
           if (typeof alarms[i].TRIGGER === "undefined")
             throw new TypeError("Alarm.TRIGGER undefined!");
 
-          let alarmContent = [], uuid = this.UUID();
+          let alarmContent = [],
+            uuid = this.UUID();
           alarmContent.push(
-              "BEGIN:VALARM",
-              "UID:" + uuid,
-              "X-WR-ALARMUID:" + uuid,
-              "ACTION:" + alarms[i].ACTION,
-              "TRIGGER:" + alarms[i].TRIGGER
+            "BEGIN:VALARM",
+            "UID:" + uuid,
+            "X-WR-ALARMUID:" + uuid,
+            "ACTION:" + alarms[i].ACTION,
+            "TRIGGER:" + alarms[i].TRIGGER
           );
           switch (alarms[i].ACTION) {
             case "AUDIO":
@@ -330,17 +355,23 @@ let icsFormatter = function() {
               break;
             case "DISPLAY":
               if (typeof alarms[i].DESCRIPTION === "undefined")
-                throw new TypeError("Alarm's ACTION is DISPLAY but DESCRIPTION undefined");
+                throw new TypeError(
+                  "Alarm's ACTION is DISPLAY but DESCRIPTION undefined"
+                );
               alarmContent.push("DESCRIPTION:" + alarms[i].DESCRIPTION);
               break;
             case "EMAIL":
               if (typeof alarms[i].DESCRIPTION === "undefined")
-                throw new TypeError("Alarm's ACTION is EMAIL but DESCRIPTION undefined");
+                throw new TypeError(
+                  "Alarm's ACTION is EMAIL but DESCRIPTION undefined"
+                );
               if (typeof alarms[i].SUMMARY === "undefined")
-                throw new TypeError("Alarm's ACTION is EMAIL but SUMMARY undefined");
+                throw new TypeError(
+                  "Alarm's ACTION is EMAIL but SUMMARY undefined"
+                );
               alarmContent.push(
-                  "SUMMARY:" + alarms[i].SUMMARY,
-                  "DESCRIPTION:" + alarms[i].DESCRIPTION
+                "SUMMARY:" + alarms[i].SUMMARY,
+                "DESCRIPTION:" + alarms[i].DESCRIPTION
               );
               if (typeof alarms[i].ATTENDEE !== "undefined")
                 alarmContent.push("ATTENDEE:" + alarms[i].ATTENDEE);
@@ -349,7 +380,9 @@ let icsFormatter = function() {
               break;
             case "PROCEDURE":
               if (typeof alarms[i].ATTACH === "undefined")
-                throw new TypeError("Alarm's ACTION is PROCEDURE but ATTACH undefined");
+                throw new TypeError(
+                  "Alarm's ACTION is PROCEDURE but ATTACH undefined"
+                );
               alarmContent.push("ATTACH;" + alarms[i].ATTACH);
               if (typeof alarms[i].DESCRIPTION !== "undefined")
                 alarmContent.push("DESCRIPTION:" + alarms[i].DESCRIPTION);
@@ -357,39 +390,48 @@ let icsFormatter = function() {
             default:
               throw new TypeError("Alarm.ACTION is illegal.");
           }
-          if (typeof alarms[i].REPEAT !== "undefined" && typeof alarms[i].DURATION !== "undefined") {
+          if (
+            typeof alarms[i].REPEAT !== "undefined" &&
+            typeof alarms[i].DURATION !== "undefined"
+          ) {
             alarmContent.push(
-                "REPEAT:" + alarms[i].REPEAT,
-                "DURATION:" + alarms[i].DURATION
+              "REPEAT:" + alarms[i].REPEAT,
+              "DURATION:" + alarms[i].DURATION
             );
-          } else if (typeof alarms[i].REPEAT === "undefined" && typeof alarms[i].DURATION === "undefined") ;
-          else throw new TypeError("Alarm has only one attribute between REPEAT and DURATION");
+          } else if (
+            typeof alarms[i].REPEAT === "undefined" &&
+            typeof alarms[i].DURATION === "undefined"
+          );
+          else
+            throw new TypeError(
+              "Alarm has only one attribute between REPEAT and DURATION"
+            );
           alarmContent.push("END:VALARM");
           eventContent = eventContent.concat(alarmContent);
         }
       }
-      eventContent.push(
-          "UID:" + this.UUID(),
-          "TRANSP:OPAQUE",
-          "END:VEVENT"
-      );
+      eventContent.push("UID:" + this.UUID(), "TRANSP:OPAQUE", "END:VEVENT");
       let ret = eventContent.join(SEPARATOR);
       return ret;
     },
     generateICS: function() {
       let formattedEvents = [];
-      for (let i in calendarEvents) {
-        let temp = this.formatEvent(
-          calendarEvents[i].title,
-          calendarEvents[i].description,
-          calendarEvents[i].location,
-          calendarEvents[i].begin,
-          calendarEvents[i].end,
-          calendarEvents[i].rrule,
-          calendarEvents[i].alarms
-        );
-        if (temp)
-          formattedEvents.push(temp);
+      for (let item = 0; item < calendarEvents.length; item++) {
+        try {
+          let temp = this.formatEvent(
+            calendarEvents[item].title,
+            calendarEvents[item].description,
+            calendarEvents[item].location,
+            calendarEvents[item].begin,
+            calendarEvents[item].end,
+            calendarEvents[item].rrule,
+            calendarEvents[item].alarms
+          );
+          if (temp) formattedEvents.push(temp);
+        } catch (error) {
+          console.log(calendarEvents[item]);
+          console.log(error);
+        }
       }
       let ret =
         this.buildCalendarBegin() +
@@ -415,7 +457,7 @@ let icsFormatter = function() {
     }
   };
 };
-let icsObj = icsFormatter();
+var icsObj = icsFormatter();
 
 function addClass(icsObj, title, location, day, section, duration) {
   // flag 0: class start time  2: class end time
@@ -446,7 +488,9 @@ function addClass(icsObj, title, location, day, section, duration) {
   if (duration.includes("单")) {
     duration = duration.replace("单", "");
     startTime = Number.parseInt(duration.substring(0, duration.indexOf("-")));
-    endTime = Number.parseInt(duration.substring(duration.indexOf("-") + 1, duration.length));
+    endTime = Number.parseInt(
+      duration.substring(duration.indexOf("-") + 1, duration.length)
+    );
     if (!startTime % 2) startTime += 1;
     if (!endTime % 2) endTime -= 1;
     rrule.INTERVAL = 2;
@@ -454,7 +498,9 @@ function addClass(icsObj, title, location, day, section, duration) {
   } else if (duration.includes("双")) {
     duration = duration.replace("双", "");
     startTime = Number.parseInt(duration.substring(0, duration.indexOf("-")));
-    endTime = Number.parseInt(duration.substring(duration.indexOf("-") + 1, duration.length));
+    endTime = Number.parseInt(
+      duration.substring(duration.indexOf("-") + 1, duration.length)
+    );
     if (startTime % 2) startTime += 1;
     if (endTime % 2) endTime -= 1;
     rrule.INTERVAL = 2;
@@ -462,7 +508,7 @@ function addClass(icsObj, title, location, day, section, duration) {
   } else if (duration.includes("-")) {
     startTime = Number.parseInt(duration.substring(0, duration.indexOf("-")));
     endTime = Number.parseInt(
-        duration.substring(duration.indexOf("-") + 1, duration.length)
+      duration.substring(duration.indexOf("-") + 1, duration.length)
     );
     rrule.INTERVAL = 1;
     rrule.COUNT = endTime - startTime + 1;
@@ -472,12 +518,8 @@ function addClass(icsObj, title, location, day, section, duration) {
     rrule = undefined;
   }
   let begin = getTargetTime(startTime, day, section, 0),
-      end = getTargetTime(startTime, day, section, 2);
-  try{
-    icsObj.addEvent(title, description, location, begin, end, rrule, alarm);
-  } catch (e) {
-    console.log(e);
-  }
+    end = getTargetTime(startTime, day, section, 2);
+  icsObj.addEvent(title, description, location, begin, end, rrule, alarm);
 }
 
 function process(data) {
@@ -498,16 +540,20 @@ function process(data) {
         let temp = data.map[isection][iday][iseq];
         if (temp.length != 0) {
           let title = temp.courseName,
-              location = temp["classroom.roomNickname"] != null ? temp["classroom.roomNickname"] : "未知",
-              durations = getDurations(temp.SKZCZFC);
+            location =
+              temp["classroom.roomNickname"] != null
+                ? temp["classroom.roomNickname"]
+                : "未知",
+            durations = getDurations(temp.SKZCZFC);
           for (let i = 0; i < durations.length; i++)
             addClass(icsObj, title, location, iday, isection, durations[i]);
         }
       }
+  icsObj.download();
 }
 function getJSON() {
-  // http://jwstu.ustb.edu.cn/smvc/StuQueryInfoService/viewStuCourseSchedule.json
-  let url = "http://jwstu.ustb.edu.cn/smvc/StuQueryInfoService/viewStuCourseSchedule.json";
+  let url =
+    "http://jwstu.ustb.edu.cn/smvc/StuQueryInfoService/viewStuCourseSchedule.json";
   let request = new XMLHttpRequest();
   request.open("get", url);
   request.send(null);
@@ -515,9 +561,7 @@ function getJSON() {
     if (request.status == 200) {
       let json = JSON.parse(request.responseText);
       if (json.code == "SUCCESS") {
-        console.log(json.body);
         process(json.body);
-        icsObj.download();
       }
     }
   };
