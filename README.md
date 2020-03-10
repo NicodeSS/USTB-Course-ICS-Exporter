@@ -24,6 +24,11 @@
 3. 浏览器应该自动下载了生成出的 ICS 文件
 4. 将 ICS 文件导入到你的日历账户（Exchange，Google 日历，iCloud 日历等）
 
+## 更新
+
+### v1.3
+添加了日程提醒：上课10分钟前显示消息
+
 ## 引用
 
 本项目使用了[FileSaver.js](https://github.com/eligrey/FileSaver.js)

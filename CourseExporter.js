@@ -1,6 +1,6 @@
-var courseExporterVersion = "1.2";
+var courseExporterVersion = "1.3";
 var initialDay = "2020-02-24";
-var alarmOn = false;
+var alarmOn = true;
 
 /* FileSaver
  * A saveAs() FileSaver implementation.
@@ -185,7 +185,7 @@ var icsFormatter = function() {
 
   let calendarName = "Calendar";
   let calendarEvents = [];
-  let alarmEnabled = false;
+  let alarmEnabled = alarmOn;
   let prodID = "-//Nicode//iCalendar Generator//CN";
 
   return {
@@ -332,10 +332,10 @@ var icsFormatter = function() {
         eventContent.push("RRULE:" + rrulestr);
       }
       if (typeof alarms !== "undefined" && alarmEnabled) {
-        for (let i in alarms) {
-          if (typeof alarms[i].ACTION === "undefined")
+        for (let item = 0 ; item<alarms.length ; item ++) {
+          if (typeof alarms[item].ACTION === "undefined")
             throw new TypeError("Alarm.ACTION undefined!");
-          if (typeof alarms[i].TRIGGER === "undefined")
+          if (typeof alarms[item].TRIGGER === "undefined")
             throw new TypeError("Alarm.TRIGGER undefined!");
 
           let alarmContent = [],
@@ -344,63 +344,63 @@ var icsFormatter = function() {
             "BEGIN:VALARM",
             "UID:" + uuid,
             "X-WR-ALARMUID:" + uuid,
-            "ACTION:" + alarms[i].ACTION,
-            "TRIGGER:" + alarms[i].TRIGGER
+            "ACTION:" + alarms[item].ACTION,
+            "TRIGGER:" + alarms[item].TRIGGER
           );
-          switch (alarms[i].ACTION) {
+          switch (alarms[item].ACTION) {
             case "AUDIO":
-              if (typeof alarms[i].ATTACH !== "undefined")
-                alarmContent.push("ATTACH;" + alarms[i].ATTACH);
+              if (typeof alarms[item].ATTACH !== "undefined")
+                alarmContent.push("ATTACH;" + alarms[item].ATTACH);
               alarmContent.push("X-APPLE-DEFAULT-ALARM:TRUE");
               break;
             case "DISPLAY":
-              if (typeof alarms[i].DESCRIPTION === "undefined")
+              if (typeof alarms[item].DESCRIPTION === "undefined")
                 throw new TypeError(
                   "Alarm's ACTION is DISPLAY but DESCRIPTION undefined"
                 );
-              alarmContent.push("DESCRIPTION:" + alarms[i].DESCRIPTION);
+              alarmContent.push("DESCRIPTION:" + alarms[item].DESCRIPTION);
               break;
             case "EMAIL":
-              if (typeof alarms[i].DESCRIPTION === "undefined")
+              if (typeof alarms[item].DESCRIPTION === "undefined")
                 throw new TypeError(
                   "Alarm's ACTION is EMAIL but DESCRIPTION undefined"
                 );
-              if (typeof alarms[i].SUMMARY === "undefined")
+              if (typeof alarms[item].SUMMARY === "undefined")
                 throw new TypeError(
                   "Alarm's ACTION is EMAIL but SUMMARY undefined"
                 );
               alarmContent.push(
-                "SUMMARY:" + alarms[i].SUMMARY,
-                "DESCRIPTION:" + alarms[i].DESCRIPTION
+                "SUMMARY:" + alarms[item].SUMMARY,
+                "DESCRIPTION:" + alarms[item].DESCRIPTION
               );
-              if (typeof alarms[i].ATTENDEE !== "undefined")
-                alarmContent.push("ATTENDEE:" + alarms[i].ATTENDEE);
-              if (typeof alarms[i].ATTACH !== "undefined")
-                alarmContent.push("ATTACH;" + alarms[i].ATTACH);
+              if (typeof alarms[item].ATTENDEE !== "undefined")
+                alarmContent.push("ATTENDEE:" + alarms[item].ATTENDEE);
+              if (typeof alarms[item].ATTACH !== "undefined")
+                alarmContent.push("ATTACH;" + alarms[item].ATTACH);
               break;
             case "PROCEDURE":
-              if (typeof alarms[i].ATTACH === "undefined")
+              if (typeof alarms[item].ATTACH === "undefined")
                 throw new TypeError(
                   "Alarm's ACTION is PROCEDURE but ATTACH undefined"
                 );
-              alarmContent.push("ATTACH;" + alarms[i].ATTACH);
-              if (typeof alarms[i].DESCRIPTION !== "undefined")
-                alarmContent.push("DESCRIPTION:" + alarms[i].DESCRIPTION);
+              alarmContent.push("ATTACH;" + alarms[item].ATTACH);
+              if (typeof alarms[item].DESCRIPTION !== "undefined")
+                alarmContent.push("DESCRIPTION:" + alarms[item].DESCRIPTION);
               break;
             default:
               throw new TypeError("Alarm.ACTION is illegal.");
           }
           if (
-            typeof alarms[i].REPEAT !== "undefined" &&
-            typeof alarms[i].DURATION !== "undefined"
+            typeof alarms[item].REPEAT !== "undefined" &&
+            typeof alarms[item].DURATION !== "undefined"
           ) {
             alarmContent.push(
-              "REPEAT:" + alarms[i].REPEAT,
-              "DURATION:" + alarms[i].DURATION
+              "REPEAT:" + alarms[item].REPEAT,
+              "DURATION:" + alarms[item].DURATION
             );
           } else if (
-            typeof alarms[i].REPEAT === "undefined" &&
-            typeof alarms[i].DURATION === "undefined"
+            typeof alarms[item].REPEAT === "undefined" &&
+            typeof alarms[item].DURATION === "undefined"
           );
           else
             throw new TypeError(
@@ -483,7 +483,11 @@ function addClass(icsObj, title, location, day, section, duration) {
   let startTime, endTime;
   let rrule = {};
   rrule.FREQ = "WEEKLY";
-  let alarm = undefined;
+  let alarms = [{
+    "ACTION": "DISPLAY",
+    "TRIGGER": "-PT10M",
+    "DESCRIPTION": "距"+title+"上课还有10分钟"
+  }];
 
   if (duration.includes("单")) {
     duration = duration.replace("单", "");
@@ -519,7 +523,7 @@ function addClass(icsObj, title, location, day, section, duration) {
   }
   let begin = getTargetTime(startTime, day, section, 0),
     end = getTargetTime(startTime, day, section, 2);
-  icsObj.addEvent(title, description, location, begin, end, rrule, alarm);
+  icsObj.addEvent(title, description, location, begin, end, rrule, alarms);
 }
 
 function process(data) {
