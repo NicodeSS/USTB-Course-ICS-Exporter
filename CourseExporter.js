@@ -1,4 +1,4 @@
-var courseExporterVersion = "1.3";
+var courseExporterVersion = "1.4";
 var initialDay = "2020-02-24";
 var alarmOn = true;
 
@@ -567,7 +567,23 @@ function getJSON() {
       if (json.code == "SUCCESS") {
         process(json.body);
       }
+      else{
+        alert("微教务后台获取课表失败！");
+      }
+    } else if(request.status == 401) {
+      alert("您还未登录微教务！");
+    } else {
+      alert("发生错误：" + request.status + "，请到Console中查看。");
     }
   };
 }
-getJSON();
+
+if( document.domain === "jwstu.ustb.edu.cn" )
+{
+  getJSON();
+}
+else
+{
+  alert("您当前所在网页不是微教务网页，无法获取课表！");
+}
+
