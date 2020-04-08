@@ -1,0 +1,26 @@
+{
+  "name": "USTBCourseExporter",
+  "version": "2.0",
+  "description": "## 本项目用于将[北京科技大学教务微服务](http://jwstu.ustb.edu.cn/)中提供的[网页版课表](http://jwstu.ustb.edu.cn/stu_daily/#/courseSchedule)导出为 iCalendar 文件，便于使用各种日历软件管理课程。",
+  "private": true,
+  "dependencies": {
+    "file-saver": "^2.0.2",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicodeSS/USTBCourseExporter.git"
+  },
+  "keywords": [],
+  "author": "Nicode",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/NicodeSS/USTBCourseExporter/issues"
+  },
+  "homepage": "https://github.com/NicodeSS/USTBCourseExporter#readme"
+}
