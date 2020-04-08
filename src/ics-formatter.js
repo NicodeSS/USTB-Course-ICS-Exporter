@@ -259,7 +259,7 @@ export default function icsFormatter(alarmOn) {
         download: function(filename, ext) {
             let calendar = this.generateICS();
             if (calendar) {
-                filename = typeof filename !== "undefined" ? filename : "Calendar";
+                filename = typeof filename !== "undefined" ? filename : "USTB Course Export " + new Date().format("yyyy-MM-dd h_mm_ss");
                 ext = typeof ext !== "undefined" ? ext : ".ics";
 
                 let blob = new Blob([calendar], {
