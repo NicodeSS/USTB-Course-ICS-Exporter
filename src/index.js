@@ -1,7 +1,7 @@
 import {default as getJSON} from './json-getter';
 import {config} from './config';
 
-if( document.domain === config.checkDomain || true) {
+if( document.domain === config.checkDomain) {
   getJSON(config.jsonUrl);
 }
 else {

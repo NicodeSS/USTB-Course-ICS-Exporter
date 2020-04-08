@@ -152,7 +152,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _json_getter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./json-getter */ \"./src/json-getter.js\");\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config */ \"./src/config.js\");\n\n\n\nif( document.domain === _config__WEBPACK_IMPORTED_MODULE_1__[\"config\"].checkDomain || true) {\n  Object(_json_getter__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(_config__WEBPACK_IMPORTED_MODULE_1__[\"config\"].jsonUrl);\n}\nelse {\n  alert(\"您当前所在网页不是微教务网页，无法获取课表！\");\n}\n\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _json_getter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./json-getter */ \"./src/json-getter.js\");\n/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config */ \"./src/config.js\");\n\n\n\nif( document.domain === _config__WEBPACK_IMPORTED_MODULE_1__[\"config\"].checkDomain) {\n  Object(_json_getter__WEBPACK_IMPORTED_MODULE_0__[\"default\"])(_config__WEBPACK_IMPORTED_MODULE_1__[\"config\"].jsonUrl);\n}\nelse {\n  alert(\"您当前所在网页不是微教务网页，无法获取课表！\");\n}\n\n\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ }),
 
