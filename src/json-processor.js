@@ -26,8 +26,16 @@ export default function processJSON(data) {
                                 ? temp["classroom.roomNickname"]
                                 : "未知",
                         durations = getDurations(temp.SKZCZFC);
-                    for (let i = 0; i < durations.length; i++)
-                        addClass(title, location, iday, isection, durations[i]);
+                    for (let i = 0; i < durations.length; i++) {
+                        let classEvent = {
+                            title: title,
+                            location: location,
+                            day: iday,
+                            section: isection,
+                            duration: durations[i]
+                        };
+                        addClass(classEvent);
+                    }
                 }
             }
     icsObj.download();
