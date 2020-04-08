@@ -12,8 +12,19 @@ export default function addClass(classEvent) {
         target.setSeconds(0);
         return target;
     }
+    function getFullLocation(location) {
+        if (location === "未知")
+            return location;
+        let identifier = location[0];
+        for (let i = 0; i < config.locationFullName.length; i++){
+            if(identifier === config.locationFullName[i][0])
+                return config.locationFullName[i][1].concat(location.substr(1));
+        }
+        return location;
+    }
+    
     let title = classEvent.title,
-        location = classEvent.location,
+        location = getFullLocation(classEvent.location),
         day = classEvent.day,
         section = classEvent.section,
         duration = classEvent.duration;
