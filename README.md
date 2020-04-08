@@ -9,13 +9,13 @@
 添加收藏夹书签
 
 - 名称：微教务课表导出脚本
-- 网址：`javascript:void(function(u,s){s=document.body.appendChild(document.createElement('script'));s.src=u;s.charset='UTF-8'}('https://raw.githack.com/NicodeSS/USTB-Course-ICS-Exporter/master/CourseExporter.js'))`
+- 网址：`javascript:void(function(u,s){s=document.body.appendChild(document.createElement('script'));s.src=u;s.charset='UTF-8'}('https://nicodess.github.io/USTB-Course-ICS-Exporter/dist/course-exporter.js'))`
 
 **方法 2**
 
 直接在浏览器地址栏输入代码，请记得在地址栏粘贴后在首部重新添加 `javascript:`。
 
-`javascript:void(function(u,s){s=document.body.appendChild(document.createElement('script'));s.src=u;s.charset='UTF-8'}('https://raw.githack.com/NicodeSS/USTB-Course-ICS-Exporter/master/CourseExporter.js'))`
+`javascript:void(function(u,s){s=document.body.appendChild(document.createElement('script'));s.src=u;s.charset='UTF-8'}('https://nicodess.github.io/USTB-Course-ICS-Exporter/dist/course-exporter.js'))`
 
 ## 使用方法
 
@@ -26,8 +26,8 @@
 
 ## 更新
 
-### v1.4
-增加了网址检测，防止在非微教务网页执行脚本。
+### v2.0
+使用Webpack重构了本脚本。
 
 ## 引用
 
