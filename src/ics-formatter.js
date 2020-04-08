@@ -76,6 +76,9 @@ export default function icsFormatter(alarmOn) {
         setAlarmEnabled: function(enabled) {
             alarmEnabled = enabled;
         },
+        importEvent: function(event) {
+          calendarEvents.push(event);
+        },
         addEvent: function(
             title,
             description,
@@ -85,7 +88,7 @@ export default function icsFormatter(alarmOn) {
             rrule,
             alarms
         ) {
-            calendarEvents.push({
+            let event = {
                 title: title,
                 description: description,
                 location: location,
@@ -93,17 +96,10 @@ export default function icsFormatter(alarmOn) {
                 end: end,
                 rrule: rrule,
                 alarms: alarms
-            });
+            };
+            calendarEvents.push(event);
         },
-        formatEvent: function(
-            title,
-            description,
-            location,
-            begin,
-            end,
-            rrule,
-            alarms
-        ) {
+        formatEvent: function(event) {
             function timeConvert(t) {
                 let tYear = ("0000" + t.getUTCFullYear().toString()).slice(-4),
                     tMonth = ("00" + (t.getUTCMonth() + 1).toString()).slice(-2),
@@ -116,11 +112,11 @@ export default function icsFormatter(alarmOn) {
                     tTime = "T" + tHours + tMinutes + tSeconds + "Z";
                 return tDate + tTime;
             }
-            if (typeof title === "undefined")
+            if (typeof event.title === "undefined")
                 throw new TypeError("VEVENT has no TITLE!");
-            if (typeof begin === "undefined")
+            if (typeof event.begin === "undefined")
                 throw new TypeError("VEVENT has no DTSTART!");
-            if (typeof end === "undefined")
+            if (typeof event.end === "undefined")
                 throw new TypeError("VEVENT has no DTEND!");
             let eventContent = [];
             eventContent.push(
@@ -128,41 +124,43 @@ export default function icsFormatter(alarmOn) {
                 "X-MICROSOFT-CDO-BUSYSTATUS:BUSY",
                 "X-MICROSOFT-CDO-IMPORTANCE:1",
                 "X-APPLE-TRAVEL-ADVISORY-BEHAVIOR:AUTOMATIC",
-                "SUMMARY:" + title,
-                "DTSTART:" + timeConvert(begin),
-                "DTEND:" + timeConvert(end)
+                "SUMMARY:" + event.title,
+                "DTSTART:" + timeConvert(event.begin),
+                "DTEND:" + timeConvert(event.end)
             );
-            if (typeof location !== "undefined")
-                eventContent.push("LOCATION:" + location);
-            if (typeof description !== "undefined")
-                eventContent.push("DESCRIPTION:" + description);
-            if (typeof rrule !== "undefined") {
-                if (typeof rrule.FREQ === "undefined")
+            if (typeof event.location !== "undefined")
+                eventContent.push("LOCATION:" + event.location);
+            if (typeof event.description !== "undefined")
+                eventContent.push("DESCRIPTION:" + event.description);
+            if (typeof event.rrule !== "undefined") {
+                if (typeof event.rrule.FREQ === "undefined")
                     throw new TypeError("RRULE.FREQ undefined!");
                 if (
                     !(
-                        rrule.FREQ === "DAILY" ||
-                        rrule.FREQ === "WEEKLY" ||
-                        rrule.FREQ === "MONTHLY" ||
-                        rrule.FREQ === "YEARLY"
+                        event.rrule.FREQ === "DAILY" ||
+                        event.rrule.FREQ === "WEEKLY" ||
+                        event.rrule.FREQ === "MONTHLY" ||
+                        event.rrule.FREQ === "YEARLY"
                     )
                 )
-                    throw "RRule.FREQ = " + rrule.FREQ + " is illegal.";
+                    throw "RRule.FREQ = " + event.rrule.FREQ + " is illegal.";
                 let rrulestr = "";
-                rrulestr += "FREQ=" + rrule.FREQ + ";";
-                if (typeof rrule.COUNT !== "undefined")
-                    rrulestr += "COUNT=" + rrule.COUNT + ";";
-                if (typeof rrule.INTERVAL !== "undefined")
-                    rrulestr += "INTERVAL=" + rrule.INTERVAL + ";";
-                if (typeof rrule.UNTIL !== "undefined")
-                    rrulestr += "UNTIL=" + rrule.UNTIL + ";";
+                rrulestr += "FREQ=" + event.rrule.FREQ + ";";
+                if (typeof event.rrule.COUNT !== "undefined")
+                    rrulestr += "COUNT=" + event.rrule.COUNT + ";";
+                if (typeof event.rrule.INTERVAL !== "undefined")
+                    rrulestr += "INTERVAL=" + event.rrule.INTERVAL + ";";
+                if (typeof event.rrule.UNTIL !== "undefined")
+                    rrulestr += "UNTIL=" + event.rrule.UNTIL + ";";
                 eventContent.push("RRULE:" + rrulestr);
             }
-            if (typeof alarms !== "undefined" && alarmEnabled) {
-                for (let item = 0 ; item<alarms.length ; item ++) {
-                    if (typeof alarms[item].ACTION === "undefined")
+            if (typeof event.alarms !== "undefined" && alarmEnabled) {
+                for (let item = 0 ; item<event.alarms.length ; item ++) {
+                    let alarm = event.alarms[item];
+                    
+                    if (typeof alarm.ACTION === "undefined")
                         throw new TypeError("Alarm.ACTION undefined!");
-                    if (typeof alarms[item].TRIGGER === "undefined")
+                    if (typeof alarm.TRIGGER === "undefined")
                         throw new TypeError("Alarm.TRIGGER undefined!");
 
                     let alarmContent = [],
@@ -171,63 +169,63 @@ export default function icsFormatter(alarmOn) {
                         "BEGIN:VALARM",
                         "UID:" + uuid,
                         "X-WR-ALARMUID:" + uuid,
-                        "ACTION:" + alarms[item].ACTION,
-                        "TRIGGER:" + alarms[item].TRIGGER
+                        "ACTION:" + alarm.ACTION,
+                        "TRIGGER:" + alarm.TRIGGER
                     );
-                    switch (alarms[item].ACTION) {
+                    switch (alarm.ACTION) {
                         case "AUDIO":
-                            if (typeof alarms[item].ATTACH !== "undefined")
-                                alarmContent.push("ATTACH;" + alarms[item].ATTACH);
+                            if (typeof alarm.ATTACH !== "undefined")
+                                alarmContent.push("ATTACH;" + alarm.ATTACH);
                             alarmContent.push("X-APPLE-DEFAULT-ALARM:TRUE");
                             break;
                         case "DISPLAY":
-                            if (typeof alarms[item].DESCRIPTION === "undefined")
+                            if (typeof alarm.DESCRIPTION === "undefined")
                                 throw new TypeError(
                                     "Alarm's ACTION is DISPLAY but DESCRIPTION undefined"
                                 );
-                            alarmContent.push("DESCRIPTION:" + alarms[item].DESCRIPTION);
+                            alarmContent.push("DESCRIPTION:" + alarm.DESCRIPTION);
                             break;
                         case "EMAIL":
-                            if (typeof alarms[item].DESCRIPTION === "undefined")
+                            if (typeof alarm.DESCRIPTION === "undefined")
                                 throw new TypeError(
                                     "Alarm's ACTION is EMAIL but DESCRIPTION undefined"
                                 );
-                            if (typeof alarms[item].SUMMARY === "undefined")
+                            if (typeof alarm.SUMMARY === "undefined")
                                 throw new TypeError(
                                     "Alarm's ACTION is EMAIL but SUMMARY undefined"
                                 );
                             alarmContent.push(
-                                "SUMMARY:" + alarms[item].SUMMARY,
-                                "DESCRIPTION:" + alarms[item].DESCRIPTION
+                                "SUMMARY:" + alarm.SUMMARY,
+                                "DESCRIPTION:" + alarm.DESCRIPTION
                             );
-                            if (typeof alarms[item].ATTENDEE !== "undefined")
-                                alarmContent.push("ATTENDEE:" + alarms[item].ATTENDEE);
-                            if (typeof alarms[item].ATTACH !== "undefined")
-                                alarmContent.push("ATTACH;" + alarms[item].ATTACH);
+                            if (typeof alarm.ATTENDEE !== "undefined")
+                                alarmContent.push("ATTENDEE:" + alarm.ATTENDEE);
+                            if (typeof alarm.ATTACH !== "undefined")
+                                alarmContent.push("ATTACH;" + alarm.ATTACH);
                             break;
                         case "PROCEDURE":
-                            if (typeof alarms[item].ATTACH === "undefined")
+                            if (typeof alarm.ATTACH === "undefined")
                                 throw new TypeError(
                                     "Alarm's ACTION is PROCEDURE but ATTACH undefined"
                                 );
-                            alarmContent.push("ATTACH;" + alarms[item].ATTACH);
-                            if (typeof alarms[item].DESCRIPTION !== "undefined")
-                                alarmContent.push("DESCRIPTION:" + alarms[item].DESCRIPTION);
+                            alarmContent.push("ATTACH;" + alarm.ATTACH);
+                            if (typeof alarm.DESCRIPTION !== "undefined")
+                                alarmContent.push("DESCRIPTION:" + alarm.DESCRIPTION);
                             break;
                         default:
                             throw new TypeError("Alarm.ACTION is illegal.");
                     }
                     if (
-                        typeof alarms[item].REPEAT !== "undefined" &&
-                        typeof alarms[item].DURATION !== "undefined"
+                        typeof alarm.REPEAT !== "undefined" &&
+                        typeof alarm.DURATION !== "undefined"
                     ) {
                         alarmContent.push(
-                            "REPEAT:" + alarms[item].REPEAT,
-                            "DURATION:" + alarms[item].DURATION
+                            "REPEAT:" + alarm.REPEAT,
+                            "DURATION:" + alarm.DURATION
                         );
                     } else if (
-                        typeof alarms[item].REPEAT === "undefined" &&
-                        typeof alarms[item].DURATION === "undefined"
+                        typeof alarm.REPEAT === "undefined" &&
+                        typeof alarm.DURATION === "undefined"
                     );
                     else
                         throw new TypeError(
@@ -244,15 +242,8 @@ export default function icsFormatter(alarmOn) {
             let formattedEvents = [];
             for (let item = 0; item < calendarEvents.length; item++) {
                 try {
-                    let temp = this.formatEvent(
-                        calendarEvents[item].title,
-                        calendarEvents[item].description,
-                        calendarEvents[item].location,
-                        calendarEvents[item].begin,
-                        calendarEvents[item].end,
-                        calendarEvents[item].rrule,
-                        calendarEvents[item].alarms
-                    );
+                    let event = calendarEvents[item],
+                        temp = this.formatEvent(event);
                     if (temp) formattedEvents.push(temp);
                 } catch (error) {
                     console.log(calendarEvents[item]);

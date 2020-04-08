@@ -1,7 +1,7 @@
 import {config} from "./config";
 import {icsObj} from "./instance";
 
-export default function addClass(title, location, day, section, duration) {
+export default function addClass(classEvent) {
     // flag 0: class start time  2: class end time
     function getTargetTime(week, day, section, flag) {
         let classTable = config.classTable;
@@ -12,16 +12,23 @@ export default function addClass(title, location, day, section, duration) {
         target.setSeconds(0);
         return target;
     }
+    let title = classEvent.title,
+        location = classEvent.location,
+        day = classEvent.day,
+        section = classEvent.section,
+        duration = classEvent.duration;
+
     let description = title + " " + location + " " + duration,
-        startTime,
-        endTime,
-        rrule = {};
-    rrule.FREQ = "WEEKLY";
-    let alarms = [{
+        rrule = {
+            FREQ: "WEEKLY"
+        },
+        alarms = [{
         "ACTION": "DISPLAY",
         "TRIGGER": "-PT10M",
         "DESCRIPTION": "距"+title+"上课还有10分钟"
-    }];
+        }],
+        startTime,
+        endTime;
 
     if (duration.includes("单")) {
         duration = duration.replace("单", "");
@@ -56,5 +63,15 @@ export default function addClass(title, location, day, section, duration) {
     }
     let begin = getTargetTime(startTime, day, section, 0),
         end = getTargetTime(startTime, day, section, 2);
-    icsObj.addEvent(title, description, location, begin, end, rrule, alarms);
+
+    let event = {
+        title: title,
+        description: description,
+        location: location,
+        begin: begin,
+        end: end,
+        rrule: rrule,
+        alarms: alarms
+    };
+    icsObj.importEvent(event);
 }
