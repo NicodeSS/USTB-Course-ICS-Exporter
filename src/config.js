@@ -3,7 +3,10 @@ export class configuration {
     this.checkDomain = "jwstu.ustb.edu.cn";
     this.jsonUrl =
       "http://jwstu.ustb.edu.cn/smvc/StuQueryInfoService/viewStuCourseSchedule.json";
-    this.initialDay = "2020-02-24";
+    this.infoUrl =
+      "http://jwstu.ustb.edu.cn/smvc/CommonService/obtainCommonInfo.json";
+    this.initialDay = null;
+    this.semester = null;
     this.alarmOn = true;
     this.classTable = [
       [0, 0, 0, 0],
