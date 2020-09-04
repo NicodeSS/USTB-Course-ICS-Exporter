@@ -5,7 +5,9 @@ export default function addClass(classEvent) {
   function getTargetTime(week, day, section, flag) {
     let classTable = config.classTable;
     let target = new Date(config.initialDay);
-    target.setDate(target.getDate() + (week - 1) * 7 + day - 1);
+    let offset =
+      config.semester === 1 && week >= config.nationalDayWeek ? 1 : 0;
+    target.setDate(target.getDate() + (week + offset - 1) * 7 + day - 1);
     target.setHours(classTable[section][flag]);
     target.setMinutes(classTable[section][flag + 1]);
     target.setSeconds(0);

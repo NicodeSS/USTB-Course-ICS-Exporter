@@ -12,22 +12,23 @@ export default function getInitialDay() {
       if (json.code === "SUCCESS") {
         let content = json.body.curSchoolDate;
         let { year, month, day, schoolWeek, dayOfWeek } = content;
+        let _month = month - 1,
+          _day = day - (schoolWeek - 1) * 7 - dayOfWeek + 1;
 
         config.semester = content.semester;
-
-        let initDay = new Date(
-          year,
-          month - 1,
-          day - (schoolWeek - 1) * 7 - dayOfWeek + 1,
-          12,
-          0,
-          0
-        );
-        console.log("Onload:", initDay);
+        let initDay = new Date(year, _month, _day, 12, 0, 0);
+        if (config.semester === 1 && !config.nationalDayWeek) {
+          config.nationalDayWeek =
+            // use which week year-10-03 in as holiday week
+            Math.floor(
+              (new Date(year, 9, 3, 12, 0, 0) - initDay) / 86400000 / 7
+            ) + 1;
+        }
         config.initialDay = initDay.toISOString().substr(0, 10);
       } else {
         let fallbackInitialDay = "2020-09-14";
         config.semester = 1;
+        config.nationalDayWeek = 3;
         alert(
           "获取学期开始日期失败！使用 " +
             fallbackInitialDay +
@@ -43,6 +44,7 @@ export default function getInitialDay() {
       );
       let fallbackInitialDay = "2020-09-14";
       config.semester = 1;
+      config.nationalDayWeek = 3;
       alert(
         "获取学期开始日期失败！使用 " + fallbackInitialDay + " 作为第一周周一。"
       );
