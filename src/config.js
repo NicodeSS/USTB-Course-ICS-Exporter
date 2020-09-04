@@ -7,6 +7,7 @@ export class configuration {
       "http://jwstu.ustb.edu.cn/smvc/CommonService/obtainCommonInfo.json";
     this.initialDay = null;
     this.semester = null;
+    this.nationalDayWeek = null;
     this.alarmOn = true;
     this.classTable = [
       [0, 0, 0, 0],

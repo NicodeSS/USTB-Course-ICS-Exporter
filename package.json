@@ -1,6 +1,6 @@
 {
   "name": "USTBCourseExporter",
-  "version": "2.2",
+  "version": "3.0(Beta)",
   "description": "## 本项目用于将[北京科技大学教务微服务](http://jwstu.ustb.edu.cn/)中提供的[网页版课表](http://jwstu.ustb.edu.cn/stu_daily/#/courseSchedule)导出为 iCalendar 文件，便于使用各种日历软件管理课程。",
   "private": true,
   "dependencies": {
