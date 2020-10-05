@@ -26,7 +26,14 @@
 
 ## 更新
 
-### v3.0 (Beta)
+### v4.0
+- 功能：运行脚本时可选择自动获取或是自定义学期以及学期第一天日期。
+- 功能：现在脚本对于2020-2021-1学期会自动忽略对国庆节假期的判断（这意味着你需要手动删除国庆期间的课程内容——毕竟今年是特殊的）
+- （注意）重构：**放弃IE支持**，引入axios库，以及ES6的async/await特性。
+- 改进：代码逻辑优化。
+- 改进：修复了一些小问题。
+
+### v3.0
 
 - 功能：针对每年的秋季学期，尝试自动修正国庆节假期。此功能仍在测试，确认无问题后会发布 Release 。（目前基准是使用 10 月 3 日的所在周作为国庆周，如果你有更好的想法请 issue ）
 
@@ -42,4 +49,6 @@
 
 ## 引用
 
-本项目使用了[FileSaver.js](https://github.com/eligrey/FileSaver.js)
+本项目使用了 [FileSaver.js](https://github.com/eligrey/FileSaver.js) , [axios](https://github.com/axios/axios) , [webpack](https://github.com/webpack/webpack)
+
+
