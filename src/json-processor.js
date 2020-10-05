@@ -33,9 +33,9 @@ export default function processJSON(data) {
             else
               _ret.push(
                 startWeek +
-                  "-" +
-                  (config.nationalDayWeek - 1 - (config.nationalDayWeek % 2)) +
-                  "单"
+                "-" +
+                (config.nationalDayWeek - 1 - (config.nationalDayWeek % 2)) +
+                "单"
               );
             if (config.nationalDayWeek === endWeek)
               _ret.push(endWeek.toString());
@@ -58,9 +58,9 @@ export default function processJSON(data) {
             else
               _ret.push(
                 startWeek +
-                  "-" +
-                  (config.nationalDayWeek - 2 + (config.nationalDayWeek % 2)) +
-                  "双"
+                "-" +
+                (config.nationalDayWeek - 2 + (config.nationalDayWeek % 2)) +
+                "双"
               );
             if (config.nationalDayWeek === endWeek)
               _ret.push(endWeek.toString());
