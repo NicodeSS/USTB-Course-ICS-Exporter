@@ -1,5 +1,11 @@
 import icsFormatter from "./ics-formatter";
+import axios from "axios";
 import { configuration } from "./config";
 
-export let config = new configuration();
-export let icsObj = new icsFormatter(config.alarmOn);
+export const config = new configuration();
+export const icsObj = new icsFormatter(config.alarmOn);
+export const axiosObj = axios.create({
+    baseURL: "http://" + config.checkDomain + "/",
+    timeout: 10000
+});
+

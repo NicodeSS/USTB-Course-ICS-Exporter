@@ -2,9 +2,9 @@ export class configuration {
   constructor() {
     this.checkDomain = "jwstu.ustb.edu.cn";
     this.jsonUrl =
-      "http://jwstu.ustb.edu.cn/smvc/StuQueryInfoService/viewStuCourseSchedule.json";
+      "/smvc/StuQueryInfoService/viewStuCourseSchedule.json";
     this.infoUrl =
-      "http://jwstu.ustb.edu.cn/smvc/CommonService/obtainCommonInfo.json";
+      "/smvc/CommonService/obtainCommonInfo.json";
     this.initialDay = null;
     this.semester = null;
     this.nationalDayWeek = null;
